@@ -72,7 +72,8 @@ func searchPost(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"posts": posts,
+		"status": "OK",
+		"posts":  posts,
 	})
 }
 

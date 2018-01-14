@@ -28,8 +28,10 @@ func (repo *datastorePostRepository) Find(id int64) (*entity.Post, error) {
 func (repo *datastorePostRepository) Search(keyword string) ([]*entity.Post, error) {
 	// TODO: keyword parser
 	q := repo.boom.NewQuery("Post")
-	for tag := range strings.Split(keyword, " ") {
-		q = q.Filter("tags =", tag)
+	for _, tag := range strings.Split(keyword, " ") {
+		if tag != "" {
+			q = q.Filter("tags =", tag)
+		}
 	}
 	// 念のため上限かけておく
 	q = q.Limit(searchLimit)
