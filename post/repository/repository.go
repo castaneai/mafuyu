@@ -7,4 +7,5 @@ type PostRepository interface {
 	Search(keyword string) ([]*entity.Post, error)
 	Insert(post *entity.Post) (*entity.Post, error)
 	Update(post *entity.Post) (*entity.Post, error)
+	Delete(post *entity.Post) error
 }
