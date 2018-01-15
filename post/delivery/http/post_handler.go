@@ -23,13 +23,11 @@ func getPostRepo(ctx context.Context) (repository.PostRepository, error) {
 	return repository.NewDatastorePostRepository(ctx, opts)
 }
 
-func getMockPost() (*entity.Post, error) {
-	return &entity.Post{
-		Title:        "12345",
-		Tags:         []string{"tag1", "tag2"},
-		Pages:        []entity.PostPage{{ContentURL: "https://cs.sankakucomplex.com/data/sample/da/ae/sample-daaeb9dc4bf27b74264eb4c8a1d2b15e.jpg?e=1516033173&m=voJk6GLXuwBDDxBBo8teVQ"}},
-		ThumbnailURL: "https://cs.sankakucomplex.com/data/preview/af/56/af565d163dd29df40e67884dbc000b0e.jpg",
-	}, nil
+func validatePost(post *entity.Post) error {
+	if len(post.Pages) < 1 {
+		return errors.New("post.Pages len must be > 0")
+	}
+	return nil
 }
 
 func insertPost(c *gin.Context) {
@@ -41,10 +39,15 @@ func insertPost(c *gin.Context) {
 		return
 	}
 
-	post, err := getMockPost()
-	if err != nil {
+	post := &entity.Post{}
+	if err := c.BindJSON(post); err != nil {
 		log.Errorf(ctx, "%v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": fmt.Sprintf("failed to get sankaku post: %v", err)})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": "failed to bind request JSON"})
+		return
+	}
+	if err := validatePost(post); err != nil {
+		log.Errorf(ctx, "%v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": fmt.Sprintf("%s", err)})
 		return
 	}
 

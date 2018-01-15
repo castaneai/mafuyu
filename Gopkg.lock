@@ -15,24 +15,6 @@
   version = "v0.16.0"
 
 [[projects]]
-  name = "github.com/PuerkitoBio/goquery"
-  packages = ["."]
-  revision = "a41cf096e64e3752d7683898d5746bc0b98ee213"
-  version = "v1.2.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/andybalholm/cascadia"
-  packages = ["."]
-  revision = "349dd0209470eabd9514242c688c403c0926d266"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/castaneai/sankaku"
-  packages = ["."]
-  revision = "413a94d5c348f7c6e389df3aea4fd4e2d86ba649"
-
-[[projects]]
   branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
@@ -108,8 +90,6 @@
   packages = [
     "context",
     "context/ctxhttp",
-    "html",
-    "html/atom",
     "http2",
     "http2/hpack",
     "idna",
@@ -246,6 +226,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "68f3a0fb3537d84b69895d5c139569a0c636806dd5b403ab5b8dd2395ce86692"
+  inputs-digest = "4e5b6248eaf523da281d2338a9c9ccc764a850a6da63a8fa6abebc517af86fa8"
   solver-name = "gps-cdcl"
   solver-version = 1
