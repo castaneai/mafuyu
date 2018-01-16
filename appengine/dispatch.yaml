@@ -1,3 +1,0 @@
-dispatch:
-  - url: "api.mafuyu.co/*"
-    service: api
