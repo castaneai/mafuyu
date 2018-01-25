@@ -82,8 +82,7 @@ func searchPost(c *gin.Context) {
 
 func Init() *gin.Engine {
 	r := gin.Default()
-	postAPI := r.Group("/api/v1/post")
-	postAPI.GET("/", searchPost)
-	postAPI.POST("/", insertPost)
+	r.GET("/post", searchPost)
+	r.POST("/post", insertPost)
 	return r
 }
