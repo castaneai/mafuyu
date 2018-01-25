@@ -12,6 +12,7 @@ import (
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -80,9 +81,36 @@ func searchPost(c *gin.Context) {
 	})
 }
 
+func getPost(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+	repo, err := getPostRepo(ctx)
+	if err != nil {
+		log.Errorf(ctx, "%+v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": "failed to get post repo"})
+		return
+	}
+	pid, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Errorf(ctx, "%+v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": "failed to convert id param to int"})
+		return
+	}
+	post, err := repo.Find(int64(pid))
+	if err != nil {
+		log.Errorf(ctx, "%+v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"status": fmt.Sprintf("failed to find post with id: %d", pid)})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"post":   post,
+	})
+}
+
 func Init() *gin.Engine {
 	r := gin.Default()
 	r.GET("/post", searchPost)
+	r.GET("/post/:id", getPost)
 	r.POST("/post", insertPost)
 	return r
 }
