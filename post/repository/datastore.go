@@ -5,6 +5,7 @@ import (
 	"github.com/castaneai/mafuyu/post/entity"
 	"go.mercari.io/datastore"
 	"go.mercari.io/datastore/boom"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -12,7 +13,7 @@ import (
 
 const (
 	kindName    = "Post"
-	searchLimit = 100
+	searchLimit = 10000
 )
 
 type datastorePostRepository struct {
@@ -69,6 +70,7 @@ func (repo *datastorePostRepository) Delete(post *entity.Post) error {
 
 func (repo *datastorePostRepository) SearchTag(keyword string) ([]*TagInfo, error) {
 	q := repo.boom.NewQuery(kindName).Filter("tags >=", keyword).Filter("tags <", keyword+string([]rune{utf8.MaxRune}))
+	q = q.Limit(searchLimit)
 	var posts []*entity.Post
 	if _, err := repo.boom.GetAll(q, &posts); err != nil {
 		return nil, err
@@ -93,6 +95,11 @@ func (repo *datastorePostRepository) SearchTag(keyword string) ([]*TagInfo, erro
 		}
 		i++
 	}
+
+	sort.Slice(tagInfos, func(i, j int) bool {
+		return tagInfos[i].PostCount > tagInfos[j].PostCount
+	})
+
 	return tagInfos, nil
 }
 
