@@ -79,6 +79,9 @@ func (repo *datastorePostRepository) SearchTag(keyword string) ([]*TagInfo, erro
 	tagCountMap := make(map[string]int)
 	for _, post := range posts {
 		for _, tag := range post.Tags {
+			if !strings.HasPrefix(tag, keyword) {
+				continue
+			}
 			if _, ok := tagCountMap[tag]; !ok {
 				tagCountMap[tag] = 0
 			}
