@@ -65,8 +65,8 @@ func (repo *datastorePostRepository) Delete(post *entity.Post) error {
 	return nil
 }
 
-func NewDatastorePostRepository(ctx context.Context, opts datastore.ClientOption) (PostRepository, error) {
-	ds, err := datastore.FromContext(ctx, opts)
+func NewDatastorePostRepository(ctx context.Context, opts ...datastore.ClientOption) (PostRepository, error) {
+	ds, err := datastore.FromContext(ctx, opts...)
 	if err != nil {
 		return nil, err
 	}
