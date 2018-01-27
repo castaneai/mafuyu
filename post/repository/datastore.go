@@ -7,9 +7,11 @@ import (
 	"go.mercari.io/datastore/boom"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const (
+	kindName    = "Post"
 	searchLimit = 100
 )
 
@@ -27,7 +29,7 @@ func (repo *datastorePostRepository) Find(id int64) (*entity.Post, error) {
 
 func (repo *datastorePostRepository) Search(keyword string) ([]*entity.Post, error) {
 	// TODO: keyword parser
-	q := repo.boom.NewQuery("Post")
+	q := repo.boom.NewQuery(kindName)
 	for _, tag := range strings.Split(keyword, " ") {
 		if tag != "" {
 			q = q.Filter("tags =", tag)
@@ -63,6 +65,35 @@ func (repo *datastorePostRepository) Delete(post *entity.Post) error {
 		return err
 	}
 	return nil
+}
+
+func (repo *datastorePostRepository) SearchTag(keyword string) ([]*TagInfo, error) {
+	q := repo.boom.NewQuery(kindName).Filter("tags >=", keyword).Filter("tags <", keyword+string([]rune{utf8.MaxRune}))
+	var posts []*entity.Post
+	if _, err := repo.boom.GetAll(q, &posts); err != nil {
+		return nil, err
+	}
+
+	tagCountMap := make(map[string]int)
+	for _, post := range posts {
+		for _, tag := range post.Tags {
+			if _, ok := tagCountMap[tag]; !ok {
+				tagCountMap[tag] = 0
+			}
+			tagCountMap[tag] += 1
+		}
+	}
+
+	tagInfos := make([]*TagInfo, len(tagCountMap))
+	i := 0
+	for tag, count := range tagCountMap {
+		tagInfos[i] = &TagInfo{
+			Tag:       tag,
+			PostCount: count,
+		}
+		i++
+	}
+	return tagInfos, nil
 }
 
 func NewDatastorePostRepository(ctx context.Context, opts ...datastore.ClientOption) (PostRepository, error) {

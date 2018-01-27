@@ -105,10 +105,31 @@ func getPost(c *gin.Context) {
 	})
 }
 
+func searchTag(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+	repo, err := getPostRepo(ctx)
+	if err != nil {
+		handleError(ctx, c, err, "failed to create post repository")
+		return
+	}
+
+	tags, err := repo.SearchTag(c.Query("q"))
+	if err != nil {
+		handleError(ctx, c, err, "failed to search tags")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"tags":   tags,
+	})
+}
+
 func Init() *gin.Engine {
 	r := gin.Default()
 	r.GET("/post", searchPost)
 	r.GET("/post/:id", getPost)
 	r.POST("/post", insertPost)
+	r.GET("/tag", searchTag)
 	return r
 }
