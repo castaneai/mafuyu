@@ -67,7 +67,7 @@ func searchPost(c *gin.Context) {
 		return
 	}
 
-	posts, err := repo.Search(c.Param("q"))
+	posts, err := repo.Search(c.Query("q"))
 	if err != nil {
 		handleError(ctx, c, err, "failed to search posts")
 		return
