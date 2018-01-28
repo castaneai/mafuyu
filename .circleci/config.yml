@@ -3,12 +3,14 @@ jobs:
   deploy:
     working_directory: /go/src/github.com/castaneai/mafuyu
     docker:
-      - image: google/cloud-sdk
+      - image: mercari/appengine-go:1.8
     steps:
       - checkout
       - run:
           name: Deploy to App Engine
           command: |
+            go get github.com/golang/dep/cmd/dep
+            dep ensure
             echo $GCP_SECRET_KEY | base64 -i --decode > $HOME/.secret-key.json
             gcloud auth activate-service-account --key-file $HOME/.secret-key.json
             gcloud config set project $GCP_PROJECT_ID
