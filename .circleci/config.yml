@@ -6,8 +6,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Deploy to App Engine
-        command: |
+          name: Deploy to App Engine
+          command: |
             echo $GCP_SECRET_KEY | base64 -i --decode > $HOME/.secret-key.json
             gcloud auth activate-service-account --key-file $HOME/.secret-key.json
             gcloud config set project $GCP_PROJECT_ID
