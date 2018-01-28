@@ -12,3 +12,10 @@ jobs:
           gcloud auth activate-service-account --key-file $HOME/.secret-key.json
           gcloud config set project $GCP_PROJECT_ID
           gcloud app deploy --version $(echo $CIRCLE_BRANCH | sed "s/\//\-/g") --service default appengine/app.yaml
+
+workflows:
+  version: 2
+
+  deploy:
+    jobs:
+      - deploy
