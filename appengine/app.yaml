@@ -1,7 +1,5 @@
 runtime: go
 api_version: go1.8
-application: morning-tide
-version: 1
 
 handlers:
 - url: /.*

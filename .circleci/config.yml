@@ -1,0 +1,14 @@
+version: 2.0
+jobs:
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run:
+        name: Deploy to App Engine
+        command: |
+          echo $GCP_SECRET_KEY | base64 -i --decode > $HOME/.secret-key.json
+          gcloud auth activate-service-account --key-file $HOME/.secret-key.json
+          gcloud config set project $GCP_PROJECT_ID
+          gcloud app deploy --version $(echo $CIRCLE_BRANCH | sed "s/\//\-/g") --service default appengine/app.yaml
