@@ -14,7 +14,7 @@ jobs:
             echo $GCP_SECRET_KEY | base64 -i --decode > $HOME/.secret-key.json
             gcloud auth activate-service-account --key-file $HOME/.secret-key.json
             gcloud config set project $GCP_PROJECT_ID
-            gcloud app deploy --version $(echo $CIRCLE_BRANCH | sed "s/\//\-/g") appengine/app.yaml
+            goapp deploy -application $GCP_PROJECT_ID -version $(echo $CIRCLE_BRANCH | sed "s/\//\-/g") appengine/app.yaml
 
 workflows:
   version: 2
