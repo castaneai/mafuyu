@@ -1,6 +1,7 @@
 version: 2.0
 jobs:
   deploy:
+    working_directory: /go/src/github.com/castaneai/mafuyu
     docker:
       - image: google/cloud-sdk
     steps:
