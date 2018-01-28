@@ -125,11 +125,32 @@ func searchTag(c *gin.Context) {
 	})
 }
 
+func countPost(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+	repo, err := getPostRepo(ctx)
+	if err != nil {
+		handleError(ctx, c, err, "failed to create post repository")
+		return
+	}
+
+	count, err := repo.Count(c.Query("q"))
+	if err != nil {
+		handleError(ctx, c, err, "failed to count posts")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "OK",
+		"count":  count,
+	})
+}
+
 func Init() *gin.Engine {
 	r := gin.Default()
 	r.GET("/post", searchPost)
 	r.GET("/post/:id", getPost)
 	r.POST("/post", insertPost)
 	r.GET("/tag", searchTag)
+	r.GET("/count", countPost)
 	return r
 }

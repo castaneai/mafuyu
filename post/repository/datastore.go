@@ -106,6 +106,21 @@ func (repo *datastorePostRepository) SearchTag(keyword string) ([]*TagInfo, erro
 	return tagInfos, nil
 }
 
+func (repo *datastorePostRepository) Count(keyword string) (int, error) {
+	// TODO: keyword parser
+	q := repo.boom.NewQuery(kindName)
+	for _, tag := range strings.Split(keyword, " ") {
+		if tag != "" {
+			q = q.Filter("tags =", tag)
+		}
+	}
+	count, err := repo.boom.Count(q)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 func NewDatastorePostRepository(ctx context.Context, opts ...datastore.ClientOption) (PostRepository, error) {
 	ds, err := datastore.FromContext(ctx, opts...)
 	if err != nil {

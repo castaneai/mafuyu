@@ -14,4 +14,5 @@ type PostRepository interface {
 	Insert(post *entity.Post) (*entity.Post, error)
 	Update(post *entity.Post) (*entity.Post, error)
 	Delete(post *entity.Post) error
+	Count(keyword string) (int, error)
 }
