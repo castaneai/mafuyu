@@ -38,11 +38,13 @@ func (repo *datastorePostRepository) Search(keyword string) ([]*entity.Post, err
 	}
 	// 念のため上限かけておく
 	q = q.Limit(searchLimit)
-	q = q.Order("-updated_at")
 	var posts []*entity.Post
 	if _, err := repo.boom.GetAll(q, &posts); err != nil {
 		return nil, err
 	}
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[i].UpdatedAt.After(posts[j].UpdatedAt)
+	})
 	return posts, nil
 }
 
