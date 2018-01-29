@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/castaneai/mafuyu/post/entity"
 	"github.com/castaneai/mafuyu/post/repository"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"google.golang.org/appengine"
@@ -147,6 +148,10 @@ func countPost(c *gin.Context) {
 
 func Init() *gin.Engine {
 	r := gin.Default()
+
+	// cors
+	r.Use(cors.Default())
+
 	r.GET("/post", searchPost)
 	r.GET("/post/:id", getPost)
 	r.POST("/post", insertPost)
