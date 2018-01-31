@@ -9,6 +9,7 @@ type TagInfo struct {
 
 type PostRepository interface {
 	Find(id int64) (*entity.Post, error)
+	FindBySourceID(sourceID string) (*entity.Post, error)
 	Search(keyword string) ([]*entity.Post, error)
 	SearchTag(keyword string) ([]*TagInfo, error)
 	Insert(post *entity.Post) (*entity.Post, error)

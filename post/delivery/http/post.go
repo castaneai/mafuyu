@@ -48,14 +48,32 @@ func insertPost(c *gin.Context) {
 		return
 	}
 
-	post, err = repo.Insert(post)
-	if err != nil {
-		handleError(ctx, c, err, fmt.Sprintf("failed to insert post"))
-		return
+	duplicationFound := false
+	status := "OK"
+	for _, source := range post.Sources {
+		dpost, err := repo.FindBySourceID(source.ID)
+		if err != nil {
+			handleError(ctx, c, err, fmt.Sprintf("failed to find post by source id: %+v", err))
+			return
+		}
+		if dpost != nil {
+			duplicationFound = true
+			status = "DUPLICATION FOUND"
+			post = dpost
+			break
+		}
+	}
+
+	if !duplicationFound {
+		post, err = repo.Insert(post)
+		if err != nil {
+			handleError(ctx, c, err, fmt.Sprintf("failed to insert post"))
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": "OK",
+		"status": status,
 		"posts":  []entity.Post{*post},
 	})
 }

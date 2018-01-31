@@ -38,20 +38,17 @@ func (repo *datastorePostRepository) Search(keyword string) ([]*entity.Post, err
 	}
 	// 念のため上限かけておく
 	q = q.Limit(searchLimit)
+	q = q.Order("-created_at")
 	var posts []*entity.Post
 	if _, err := repo.boom.GetAll(q, &posts); err != nil {
 		return nil, err
 	}
-	sort.Slice(posts, func(i, j int) bool {
-		return posts[i].UpdatedAt.After(posts[j].UpdatedAt)
-	})
 	return posts, nil
 }
 
 func (repo *datastorePostRepository) Insert(post *entity.Post) (*entity.Post, error) {
 	now := time.Now()
 	post.CreatedAt = now
-	post.UpdatedAt = now
 	if _, err := repo.boom.Put(post); err != nil {
 		return nil, err
 	}
@@ -122,6 +119,18 @@ func (repo *datastorePostRepository) Count(keyword string) (int, error) {
 		return 0, err
 	}
 	return count, nil
+}
+
+func (repo *datastorePostRepository) FindBySourceID(sourceID string) (*entity.Post, error) {
+	q := repo.boom.NewQuery(kindName).Filter("sources.id =", sourceID).Limit(1)
+	var posts []*entity.Post
+	if _, err := repo.boom.GetAll(q, &posts); err != nil {
+		return nil, err
+	}
+	if len(posts) < 1 {
+		return nil, nil
+	}
+	return posts[0], nil
 }
 
 func NewDatastorePostRepository(ctx context.Context, opts ...datastore.ClientOption) (PostRepository, error) {
