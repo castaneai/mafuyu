@@ -1,6 +1,9 @@
 version: 2.0
 jobs:
   deploy:
+    branches:
+      only:
+        - master
     working_directory: /go/src/github.com/castaneai/mafuyu
     docker:
       - image: mercari/appengine-go:1.8

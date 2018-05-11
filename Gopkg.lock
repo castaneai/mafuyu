@@ -36,12 +36,6 @@
   version = "v0.0.3"
 
 [[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/ugorji/go"
   packages = ["codec"]
@@ -125,6 +119,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e0a95f019344181fad5690f573304782043357365cdc8df47ef25d49b79b33a3"
+  inputs-digest = "5ba094dd2cb6eed4694e821bf24669f503b62e04add25198e0c019eaa5698bf3"
   solver-name = "gps-cdcl"
   solver-version = 1
